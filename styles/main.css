@@ -1,0 +1,261 @@
+/* Main CSS styles for Hotel Price Analyst Dashboard */
+
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Streamlit Main Container */
+.main .block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    max-width: 1200px;
+}
+
+/* Header Styling */
+h1 {
+    color: #2C3E50;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+h2 {
+    color: #34495E;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+h3 {
+    color: #34495E;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Metric Cards */
+.metric-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: white;
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.metric-card h4 {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-card .metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+}
+
+/* Alternative Metric Card Styles */
+.metric-card-blue {
+    background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+}
+
+.metric-card-green {
+    background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+}
+
+.metric-card-orange {
+    background: linear-gradient(135deg, #F39C12 0%, #E67E22 100%);
+}
+
+.metric-card-red {
+    background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+}
+
+/* Filter Section */
+.filter-section {
+    background: #F8F9FA;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Streamlit Selectbox and Date Input Styling */
+.stSelectbox > div > div {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+}
+
+.stDateInput > div > div {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+}
+
+/* Chart Container */
+.chart-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+/* Info Box */
+.info-box {
+    background: #E8F4F8;
+    border-left: 4px solid #4A90E2;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.info-box p {
+    color: #2C3E50;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Warning Box */
+.warning-box {
+    background: #FFF3CD;
+    border-left: 4px solid #F39C12;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.warning-box p {
+    color: #856404;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Error Box */
+.error-box {
+    background: #F8D7DA;
+    border-left: 4px solid #E74C3C;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.error-box p {
+    color: #721C24;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Success Box */
+.success-box {
+    background: #D4EDDA;
+    border-left: 4px solid #2ECC71;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.success-box p {
+    color: #155724;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main .block-container {
+        padding: 1rem;
+    }
+    
+    .metric-card .metric-value {
+        font-size: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F1F1F1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Streamlit Button Styling */
+.stButton > button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Streamlit Text Input Styling */
+.stTextInput > div > div > input {
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+}
+
+/* Streamlit Number Input Styling */
+.stNumberInput > div > div > input {
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #E0E0E0, transparent);
+    margin: 2rem 0;
+}
+
+/* Hide Streamlit Deploy button in top header */
+button[data-testid="stDeployButton"] {
+    display: none !important;
+}
+
+/* Hide generic header deploy button variant */
+button[kind="header"][data-testid="stBaseButton-header"] {
+    display: none !important;
+}
+
