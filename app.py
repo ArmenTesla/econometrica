@@ -59,6 +59,7 @@ st.set_page_config(
 NAV_TAB_ANALYTICS = "analytics"
 NAV_TAB_ECONOMETRICS = "econometrics"
 NAV_TAB_FORECASTS = "forecasts"
+NAV_TAB_ABOUT_MODEL = "about_model"
 
 
 # Initialize session state
@@ -164,11 +165,12 @@ def render_sidebar(t):
         st.rerun()
 
     st.sidebar.subheader(t("navigation"))
-    tab_options = [NAV_TAB_ANALYTICS, NAV_TAB_ECONOMETRICS, NAV_TAB_FORECASTS]
+    tab_options = [NAV_TAB_ANALYTICS, NAV_TAB_ECONOMETRICS, NAV_TAB_FORECASTS, NAV_TAB_ABOUT_MODEL]
     tab_labels = {
         NAV_TAB_ANALYTICS: t("nav_analytics"),
         NAV_TAB_ECONOMETRICS: t("nav_econometrics"),
         NAV_TAB_FORECASTS: t("nav_forecasts"),
+        NAV_TAB_ABOUT_MODEL: t("nav_about_model"),
     }
     selected_tab = st.sidebar.radio(
         "",
@@ -638,6 +640,112 @@ def render_forecast_placeholder(t):
     st.info(t("forecasts_placeholder"))
 
 
+def render_about_model_section(t, filtered_df):
+    """Render the comprehensive explanation of the econometric model."""
+    st.header(t("about_model_title"))
+    
+    # Introduction
+    st.markdown(t("about_model_intro"))
+    st.markdown("---")
+    
+    # Model Specification
+    st.subheader(t("about_model_specification"))
+    st.markdown(t("about_model_type"))
+    
+    st.markdown(f"**{t('about_model_formula_title')}:**")
+    st.code(t("about_model_formula"), language=None)
+    st.markdown(t("about_model_formula_explanation"))
+    st.markdown("---")
+    
+    # Dependent Variable
+    st.subheader(t("about_model_dependent"))
+    st.markdown(f"**{t('about_model_dependent_title')}**")
+    st.markdown(t("about_model_dependent_explanation"))
+    st.markdown("---")
+    
+    # Independent Variables
+    st.subheader(t("about_model_independent"))
+    st.markdown(t("about_model_independent_intro"))
+    
+    # Season
+    st.markdown(f"**{t('about_model_season_title')}**")
+    st.markdown(f"- {t('about_model_season_baseline')}")
+    st.markdown(f"- {t('about_model_season_interpretation')}")
+    st.markdown(f"- {t('about_model_season_reference')}")
+    
+    # City
+    st.markdown(f"**{t('about_model_city_title')}**")
+    st.markdown(f"- {t('about_model_city_baseline')}")
+    st.markdown(f"- {t('about_model_city_interpretation')}")
+    st.markdown(f"- {t('about_model_city_importance')}")
+    
+    # Hotel Fixed Effects
+    st.markdown(f"**{t('about_model_hotel_title')}**")
+    st.markdown(f"- {t('about_model_hotel_explanation')}")
+    st.markdown(f"- {t('about_model_hotel_controls')}")
+    st.markdown(f"- {t('about_model_hotel_reference')}")
+    
+    # Time Trend
+    st.markdown(f"**{t('about_model_trend_title')}**")
+    st.markdown(f"- {t('about_model_trend_explanation')}")
+    st.markdown(f"- {t('about_model_trend_purpose')}")
+    st.markdown(f"- {t('about_model_trend_interpretation')}")
+    st.markdown("---")
+    
+    # Winter Reliability
+    st.subheader(t("about_model_winter_reliability"))
+    st.markdown(f"**{t('about_model_winter_title')}**")
+    st.markdown(t("about_model_winter_stable"))
+    
+    st.markdown(f"**{t('about_model_winter_stable_demand')}**")
+    st.markdown(f"**{t('about_model_winter_less_volatility')}**")
+    st.markdown(f"**{t('about_model_winter_predictable')}**")
+    
+    st.markdown(t("about_model_summer_challenges"))
+    st.markdown(f"- {t('about_model_summer_tourism')}")
+    st.markdown(f"- {t('about_model_summer_events')}")
+    st.markdown(f"- {t('about_model_summer_capacity')}")
+    
+    st.markdown(f"**{t('about_model_winter_conclusion')}**")
+    st.markdown("---")
+    
+    # Statistical Significance
+    st.subheader(t("about_model_significance"))
+    st.markdown(f"**{t('about_model_significance_title')}**")
+    st.markdown(t("about_model_significance_explanation"))
+    st.markdown(t("about_model_significance_threshold"))
+    
+    st.markdown(f"**{t('about_model_significance_meaningful')}**")
+    st.markdown(t("about_model_significance_nonmeaningful"))
+    st.markdown("---")
+    
+    # ANOVA
+    st.subheader(t("about_model_anova"))
+    st.markdown(f"**{t('about_model_anova_title')}**")
+    st.markdown(t("about_model_anova_explanation"))
+    st.markdown(f"- {t('about_model_anova_fstat')}")
+    st.markdown(f"- {t('about_model_anova_pvalue')}")
+    st.markdown(t("about_model_anova_complement"))
+    st.markdown("---")
+    
+    # Practical Interpretation
+    st.subheader(t("about_model_practical"))
+    st.markdown(f"**{t('about_model_practical_title')}**")
+    
+    st.markdown(t("about_model_practical_hotel"))
+    st.markdown(f"- {t('about_model_practical_hotel_season')}")
+    st.markdown(f"- {t('about_model_practical_hotel_city')}")
+    st.markdown(f"- {t('about_model_practical_hotel_trend')}")
+    
+    st.markdown(t("about_model_practical_analyst"))
+    st.markdown(f"- {t('about_model_practical_analyst_rigor')}")
+    st.markdown(f"- {t('about_model_practical_analyst_quantification')}")
+    st.markdown(f"- {t('about_model_practical_analyst_validation')}")
+    
+    st.markdown("---")
+    st.markdown(f"**{t('about_model_practical_serious')}**")
+
+
 def main():
     """Main application function."""
     load_css()
@@ -896,7 +1004,8 @@ def main():
             st.write(f"**{t('filtered_date_max')}:** {filtered_df['date'].max()}")
     
     # Main content area
-    if filtered_df.empty:
+    # About Model tab doesn't require filtered data, so allow it to proceed
+    if filtered_df.empty and selected_tab != NAV_TAB_ABOUT_MODEL:
         # After applying season → date range (with auto-correction) → city/hotel,
         # there is still no data. For specific seasons this is typically due to
         # city/hotel filters being too narrow, not a season/date mismatch.
@@ -923,6 +1032,8 @@ def main():
         render_econometric_section(t, filtered_df)
     elif selected_tab == NAV_TAB_FORECASTS:
         render_forecast_placeholder(t)
+    elif selected_tab == NAV_TAB_ABOUT_MODEL:
+        render_about_model_section(t, filtered_df)
 
     # Footer
     st.markdown("---")

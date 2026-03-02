@@ -85,6 +85,7 @@
   "nav_analytics": "Analytics",
   "nav_econometrics": "Econometric Analysis",
   "nav_forecasts": "Forecasts",
+  "nav_about_model": "About the Model",
 
   "econometric_analysis": "Econometric Analysis",
   "econometric_regression_title": "Model 1: Multiple Linear Regression (OLS)",
@@ -145,6 +146,80 @@
   "login_error_invalid": "Invalid password. Please try again.",
   "login_error_missing_secret": "Application password is not configured. Please contact the administrator.",
 
-  "missing_file": "Data file not found. Please check the server configuration."
+  "missing_file": "Data file not found. Please check the server configuration.",
+
+  "about_model_title": "About the Econometric Model",
+  "about_model_intro": "This section provides a comprehensive explanation of the econometric methodology underlying the price analysis. The model employs classical statistical techniques to identify and quantify the factors driving hotel pricing in Armenia.",
+
+  "about_model_specification": "Model Specification",
+  "about_model_type": "The core model is a Multiple Linear Regression estimated using Ordinary Least Squares (OLS) with heteroskedasticity-robust standard errors (HC1).",
+  "about_model_formula_title": "Mathematical Specification",
+  "about_model_formula": "price_per_night = α + seasonal_effects + city_effects + hotel_fixed_effects + time_trend + error_term",
+  "about_model_formula_explanation": "The model decomposes price per night into a baseline intercept (α), seasonal deviations from winter, city-specific effects relative to Yerevan, hotel-specific fixed effects, a linear time trend, and an error term capturing unobserved factors.",
+
+  "about_model_dependent": "Dependent Variable",
+  "about_model_dependent_title": "Price per Night",
+  "about_model_dependent_explanation": "The dependent variable is price_per_night, measured in USD. The model uses price levels rather than logarithmic transformations, providing direct interpretability of coefficients in dollar terms. This specification is appropriate for understanding absolute price differences across seasons, cities, and hotels.",
+
+  "about_model_independent": "Independent Variables",
+  "about_model_independent_intro": "The model includes four categories of explanatory variables, each capturing distinct dimensions of price variation:",
+
+  "about_model_season_title": "Seasonal Effects",
+  "about_model_season_baseline": "Winter serves as the reference category (baseline). The model estimates coefficients for Spring, Summer, and Autumn relative to Winter.",
+  "about_model_season_interpretation": "Seasonal coefficients indicate the dollar amount by which prices in a given season differ from winter prices, holding all other factors constant. For example, a positive Summer coefficient of +X USD means summer prices are X dollars higher than winter prices for the same hotel in the same city.",
+  "about_model_season_reference": "Winter is chosen as the baseline because it represents the most stable pricing period with the least tourism-driven volatility.",
+
+  "about_model_city_title": "City Effects",
+  "about_model_city_baseline": "Yerevan serves as the reference category. The model estimates coefficients for Gyumri relative to Yerevan.",
+  "about_model_city_interpretation": "City coefficients capture systematic price differences between cities, controlling for season, hotel quality, and time trends. These effects reflect differences in market structure, demand patterns, and competitive dynamics between Armenia's major urban centers.",
+  "about_model_city_importance": "City effects are economically meaningful in Armenia due to distinct tourism markets, infrastructure differences, and varying levels of international visitor concentration between the capital and regional centers.",
+
+  "about_model_hotel_title": "Hotel Fixed Effects",
+  "about_model_hotel_explanation": "The model includes fixed effects for each hotel using the C(hotel_name) specification. One hotel is automatically omitted as the reference category.",
+  "about_model_hotel_controls": "Hotel fixed effects control for time-invariant hotel characteristics that influence pricing, including quality, reputation, location-specific advantages, brand value, and other unobserved hotel-specific factors that remain constant over the analysis period.",
+  "about_model_hotel_reference": "The omitted hotel serves as the baseline against which all other hotels' price premiums or discounts are measured.",
+
+  "about_model_trend_title": "Time Trend",
+  "about_model_trend_explanation": "The time_trend variable represents the number of days elapsed since the first observation in the dataset. It captures systematic price movements over time that are not explained by seasonal patterns.",
+  "about_model_trend_purpose": "Including a time trend accounts for long-term market dynamics such as inflation, market maturation, changes in overall demand, and gradual shifts in pricing strategies.",
+  "about_model_trend_interpretation": "The coefficient on time_trend indicates the daily change in price. To interpret yearly changes, multiply the coefficient by 365. A positive coefficient suggests upward price pressure over time, while a negative coefficient indicates downward pressure.",
+
+  "about_model_winter_reliability": "Why Winter Results Are Most Reliable",
+  "about_model_winter_title": "Statistical Stability in Winter",
+  "about_model_winter_stable": "The model provides the most statistically stable and interpretable results during the winter season. This reliability stems from several structural characteristics of winter pricing:",
+  "about_model_winter_stable_demand": "Winter exhibits more stable demand patterns with fewer extreme price shocks. The absence of major tourism events and festivals reduces volatility.",
+  "about_model_winter_less_volatility": "There is less tourism-driven volatility during winter months. Prices reflect more fundamental market conditions rather than temporary demand spikes.",
+  "about_model_winter_predictable": "Coefficients estimated using winter data are more stable and provide better predictive power. The relationships between explanatory variables and prices are less contaminated by seasonal noise.",
+  "about_model_summer_challenges": "In contrast, summer prices are affected by multiple confounding factors:",
+  "about_model_summer_tourism": "Tourism spikes create temporary demand surges that may not reflect underlying market fundamentals.",
+  "about_model_summer_events": "Special events, festivals, and conferences introduce exogenous price shocks that complicate interpretation.",
+  "about_model_summer_capacity": "Capacity constraints during peak periods create non-linear pricing dynamics that are less well-captured by linear models.",
+  "about_model_winter_conclusion": "Therefore, while the model provides valid estimates across all seasons, coefficients and predictions derived from winter data offer the highest degree of statistical confidence and economic interpretability.",
+
+  "about_model_significance": "Statistical Significance",
+  "about_model_significance_title": "Interpreting p-values",
+  "about_model_significance_explanation": "Each coefficient is tested for statistical significance using robust standard errors. The p-value indicates the probability of observing a coefficient of this magnitude (or larger) if the true effect were zero.",
+  "about_model_significance_threshold": "A coefficient is considered statistically significant if p < 0.05, meaning there is less than a 5% chance that the observed relationship is due to random variation.",
+  "about_model_significance_meaningful": "Significant factors have a reliable, non-zero effect on prices. These relationships are robust to sampling variation and provide actionable insights.",
+  "about_model_significance_nonmeaningful": "Non-significant factors may still have economic importance, but their effects cannot be distinguished from zero with sufficient confidence given the available data. This may occur due to insufficient sample size, high variance, or genuinely weak relationships.",
+
+  "about_model_anova": "Seasonal ANOVA Analysis",
+  "about_model_anova_title": "Model 2: One-Way ANOVA",
+  "about_model_anova_explanation": "The ANOVA (Analysis of Variance) test complements the regression analysis by testing whether mean prices differ across seasons without controlling for other factors.",
+  "about_model_anova_fstat": "The F-statistic measures the ratio of between-group variance (seasonal differences) to within-group variance (price variation within seasons). A larger F-statistic indicates stronger evidence that seasonal means differ.",
+  "about_model_anova_pvalue": "The p-value from the ANOVA test indicates the probability that observed seasonal differences could occur by chance if there were no true seasonal effect. A p-value below 0.05 provides strong evidence that seasonal price differences are statistically meaningful.",
+  "about_model_anova_complement": "ANOVA complements regression by providing a simpler test of seasonal effects. While regression controls for city, hotel, and time trends, ANOVA tests the raw seasonal pattern, helping validate that seasonal differences are not artifacts of other variables.",
+
+  "about_model_practical": "Practical Interpretation",
+  "about_model_practical_title": "How to Read the Results",
+  "about_model_practical_hotel": "For hotel owners and managers, the coefficients provide actionable insights:",
+  "about_model_practical_hotel_season": "Seasonal coefficients indicate how much prices should adjust relative to winter baseline to reflect market conditions.",
+  "about_model_practical_hotel_city": "City coefficients reveal whether pricing strategies should differ between Yerevan and regional markets.",
+  "about_model_practical_hotel_trend": "The time trend coefficient helps anticipate long-term price movements and plan for inflationary or deflationary periods.",
+  "about_model_practical_analyst": "For data analysts and researchers, the model provides:",
+  "about_model_practical_analyst_rigor": "A rigorous econometric framework for testing hypotheses about price determinants.",
+  "about_model_practical_analyst_quantification": "Quantification of the relative importance of different factors (season, location, hotel quality) in driving prices.",
+  "about_model_practical_analyst_validation": "Statistical validation of pricing patterns through significance tests and model diagnostics.",
+  "about_model_practical_serious": "This analysis is not a demonstration or toy model. It employs standard econometric techniques used in academic research and professional consulting. The robust standard errors ensure that inference remains valid even when classical homoskedasticity assumptions are violated, making the results suitable for policy analysis and business decision-making."
 }
 
