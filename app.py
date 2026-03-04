@@ -227,6 +227,73 @@ def _format_econometric_term(term: str, t) -> str:
     return term
 
 
+def _extract_seasonal_coefficient(coef_df, season_name, t):
+    """Extract seasonal coefficient value."""
+    season_rows = coef_df[coef_df["term"].str.startswith("C(season")]
+    for _, row in season_rows.iterrows():
+        term = row["term"]
+        if "[T." in term:
+            raw_season = term.split("[T.", 1)[1].rstrip("]")
+            if raw_season == season_name:
+                return float(row["coef"])
+    return None
+
+
+def _extract_city_coefficient(coef_df, t):
+    """Extract city coefficient value."""
+    city_rows = coef_df[coef_df["term"].str.startswith("C(city")]
+    if not city_rows.empty:
+        return float(city_rows.iloc[0]["coef"])
+    return None
+
+
+def _extract_time_trend_coefficient(coef_df):
+    """Extract time trend coefficient value."""
+    trend_rows = coef_df[coef_df["term"] == "time_trend"]
+    if not trend_rows.empty:
+        return float(trend_rows.iloc[0]["coef"])
+    return None
+
+
+def _extract_hotel_examples(coef_df, n_examples=3):
+    """Extract example hotels with their fixed effect coefficients."""
+    hotel_rows = coef_df[coef_df["term"].str.startswith("C(hotel_name")]
+    if hotel_rows.empty:
+        return []
+    
+    # Sort by absolute coefficient value and take top examples
+    hotel_rows = hotel_rows.copy()
+    hotel_rows["abs_coef"] = hotel_rows["coef"].abs()
+    hotel_rows = hotel_rows.sort_values("abs_coef", ascending=False).head(n_examples)
+    
+    examples = []
+    for _, row in hotel_rows.iterrows():
+        term = row["term"]
+        if "[T." in term:
+            hotel_name = term.split("[T.", 1)[1].rstrip("]")
+            coef = float(row["coef"])
+            examples.append({"hotel": hotel_name, "coef": coef})
+    return examples
+
+
+def _interpret_f_statistic(f_stat):
+    """Interpret F-statistic strength."""
+    if f_stat > 10:
+        return "strong"
+    elif f_stat > 5:
+        return "moderate"
+    else:
+        return "weak"
+
+
+def _interpret_p_value(p_value):
+    """Interpret p-value significance."""
+    if p_value < 0.05:
+        return "significant"
+    else:
+        return "nonsignificant"
+
+
 def render_analytics_section(
     t,
     display_df,
@@ -558,7 +625,7 @@ def render_analytics_section(
 
 
 def render_econometric_section(t, filtered_df):
-    """Render the econometric analysis tab."""
+    """Render the econometric analysis tab with comprehensive academic explanation."""
     st.header(t("econometric_analysis"))
 
     econ_df = filtered_df.copy()
@@ -566,11 +633,153 @@ def render_econometric_section(t, filtered_df):
     ols_result = run_ols_price_model(econ_df)
     anova_result = run_season_anova(econ_df)
 
+    # ===================================================================
+    # ACADEMIC INTERPRETATION SECTIONS
+    # ===================================================================
+    
     if ols_result is not None:
+        coef_df = ols_result["coef_table"].copy()
+        baseline = ols_result["baseline"]
+        
+        # Academic Title
+        st.markdown("---")
+        st.subheader(t("econ_academic_title"))
+        st.markdown(t("econ_academic_intro"))
+        
+        # 1. Model Purpose and Role
+        st.markdown("---")
+        st.subheader(t("econ_section_purpose_title"))
+        st.markdown(t("econ_section_purpose_why_model"))
+        st.markdown(t("econ_section_purpose_question"))
+        st.markdown(t("econ_section_purpose_ceteris"))
+        
+        # 2. Model Specification
+        st.markdown("---")
+        st.subheader(t("econ_section_specification_title"))
+        st.markdown(t("econ_section_specification_dependent"))
+        st.markdown(t("econ_section_specification_independent"))
+        st.markdown(f"- {t('econ_section_specification_season')}")
+        st.markdown(f"- {t('econ_section_specification_city')}")
+        st.markdown(f"- {t('econ_section_specification_hotel')}")
+        st.markdown(f"- {t('econ_section_specification_trend')}")
+        st.markdown(t("econ_section_specification_levels"))
+        
+        # 3. Interpreting Regression Coefficients
+        st.markdown("---")
+        st.subheader(t("econ_section_coefficients_title"))
+        
+        # A. Intercept
+        st.markdown(f"**{t('econ_section_coefficients_intercept_title')}**")
+        st.markdown(t("econ_section_coefficients_intercept_explanation"))
+        
+        # B. Seasonal Coefficients
+        st.markdown(f"**{t('econ_section_coefficients_seasonal_title')}**")
+        summer_coef = _extract_seasonal_coefficient(coef_df, "Summer", t)
+        if summer_coef is not None:
+            st.markdown(t("econ_section_coefficients_seasonal_explanation", coef=summer_coef))
+        else:
+            st.markdown(t("econ_section_coefficients_seasonal_explanation", coef=0.0))
+        st.markdown(t("econ_section_coefficients_seasonal_baseline"))
+        
+        # C. City Effect
+        st.markdown(f"**{t('econ_section_coefficients_city_title')}**")
+        st.markdown(t("econ_section_coefficients_city_explanation"))
+        st.markdown(t("econ_section_coefficients_city_interpretation"))
+        
+        # D. Hotel Fixed Effects
+        st.markdown(f"**{t('econ_section_coefficients_hotel_title')}**")
+        st.markdown(t("econ_section_coefficients_hotel_why"))
+        st.markdown(f"- {t('econ_section_coefficients_hotel_quality')}")
+        st.markdown(f"- {t('econ_section_coefficients_hotel_reputation')}")
+        st.markdown(f"- {t('econ_section_coefficients_hotel_location')}")
+        st.markdown(f"- {t('econ_section_coefficients_hotel_amenities')}")
+        st.markdown(t("econ_section_coefficients_hotel_comparison"))
+        st.markdown(t("econ_section_coefficients_hotel_interpretation"))
+        
+        # 4. Concrete Comparison Between Hotels
+        st.markdown("---")
+        st.subheader(t("econ_section_comparison_title"))
+        st.markdown(t("econ_section_comparison_intro"))
+        
+        hotel_examples = _extract_hotel_examples(coef_df, n_examples=3)
+        if hotel_examples:
+            for example in hotel_examples:
+                direction = t("econ_section_comparison_direction_higher") if example["coef"] >= 0 else t("econ_section_comparison_direction_lower")
+                st.markdown(t("econ_section_comparison_example", 
+                             hotel=example["hotel"], 
+                             coef=abs(example["coef"]),
+                             direction=direction))
+        st.markdown(t("econ_section_comparison_economic"))
+        st.markdown(t("econ_section_comparison_controlled"))
+        
+        # 5. Statistical Significance and Reliability
+        st.markdown("---")
+        st.subheader(t("econ_section_significance_title"))
+        st.markdown(t("econ_section_significance_pvalue"))
+        st.markdown(t("econ_section_significance_threshold"))
+        st.markdown(t("econ_section_significance_difference"))
+        st.markdown(f"- **{t('econ_section_significance_statistical')}**")
+        st.markdown(f"- **{t('econ_section_significance_economic')}**")
+        st.markdown(t("econ_section_significance_insignificant"))
+        st.markdown(f"- {t('econ_section_significance_low_variation')}")
+        st.markdown(f"- {t('econ_section_significance_limited_sample')}")
+        st.markdown(f"- {t('econ_section_significance_collinearity')}")
+        
+        # 6. Why Winter is Most Reliable
+        st.markdown("---")
+        st.subheader(t("econ_section_winter_title"))
+        st.markdown(f"**{t('econ_section_winter_emphasis')}**")
+        st.markdown(t("econ_section_winter_stability"))
+        st.markdown(t("econ_section_winter_tourism"))
+        st.markdown(t("econ_section_winter_predictable"))
+        st.markdown(t("econ_section_winter_strategic"))
+        st.markdown(t("econ_section_winter_conclusion"))
+        
+        # 7. ANOVA Results Interpretation
+        if anova_result is not None:
+            st.markdown("---")
+            st.subheader(t("econ_section_anova_title"))
+            st.markdown(t("econ_section_anova_what"))
+            st.markdown(t("econ_section_anova_why"))
+            
+            f_stat = anova_result["f_stat"]
+            p_value = anova_result["p_value"]
+            f_interp = _interpret_f_statistic(f_stat)
+            p_interp = _interpret_p_value(p_value)
+            
+            f_interp_key = f"econ_section_anova_fstat_{f_interp}"
+            p_interp_key = f"econ_section_anova_pvalue_{p_interp}"
+            
+            st.markdown(t("econ_section_anova_fstat", 
+                         f_stat=f_stat,
+                         interpretation=t(f_interp_key)))
+            st.markdown(t("econ_section_anova_pvalue",
+                         p_value=p_value,
+                         interpretation=t(p_interp_key)))
+        
+        # 8. Common Defense Questions
+        st.markdown("---")
+        st.subheader(t("econ_section_questions_title"))
+        st.markdown("**Q: Why regression instead of averages?**")
+        st.markdown(t("econ_section_questions_regression"))
+        st.markdown("**Q: Why Winter as baseline?**")
+        st.markdown(t("econ_section_questions_winter"))
+        st.markdown("**Q: What does a hotel fixed effect mean?**")
+        st.markdown(t("econ_section_questions_fixed_effect"))
+        st.markdown("**Q: Is this model causal?**")
+        st.markdown(t("econ_section_questions_causal"))
+        st.markdown("**Q: What are the limitations?**")
+        st.markdown(t("econ_section_questions_limitations"))
+        
+        # ===================================================================
+        # REGRESSION TABLE AND RESULTS
+        # ===================================================================
+        
+        st.markdown("---")
         st.subheader(t("econometric_regression_title"))
         st.caption(t("econometric_regression_description"))
 
-        coef_table = ols_result["coef_table"].copy()
+        coef_table = coef_df.copy()
         coef_table["Term"] = coef_table["term"].apply(
             lambda term: _format_econometric_term(term, t)
         )
@@ -614,7 +823,9 @@ def render_econometric_section(t, filtered_df):
                 value=f"{int(n_obs)}",
             )
 
+    # ANOVA Section
     if anova_result is not None:
+        st.markdown("---")
         st.subheader(t("econometric_anova_title"))
         st.caption(t("econometric_anova_description"))
         st.write(
@@ -625,8 +836,10 @@ def render_econometric_section(t, filtered_df):
             )
         )
 
+    # Key Insights
     insights = build_econometric_insights(ols_result, anova_result, t)
     if insights["regression"] or insights["anova"]:
+        st.markdown("---")
         st.subheader(t("econometric_insights_title"))
         for text in insights["regression"]:
             st.markdown(f"- {text}")
